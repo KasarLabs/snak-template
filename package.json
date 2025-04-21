@@ -1,7 +1,7 @@
 {
   "name": "snak-template",
   "version": "1.0.0",
-  "description": "StarkNet Agent Kit template",
+  "description": "Snak template",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -15,7 +15,9 @@
   "keywords": [
     "starknet",
     "agent",
-    "ai"
+    "ai",
+    "snak",
+    "snak-template"
   ],
   "author": "",
   "license": "ISC",

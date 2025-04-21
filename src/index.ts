@@ -2,8 +2,6 @@ import { load_json_config, StarknetAgent } from "@hijox/agents";
 
 import dotenv from "dotenv";
 import { RpcProvider } from "starknet";
-import fs from "fs";
-import path from "path";
 
 // Initialize environment variables
 dotenv.config();
@@ -37,12 +35,6 @@ async function main() {
       throw new Error(
         `Missing required environment variables: ${missingVars.join(", ")}. Please check your .env file.`,
       );
-    }
-
-    // Check if config file exists
-    const configPath = path.resolve("default.agent.json");
-    if (!fs.existsSync(configPath)) {
-      throw new Error(`Agent configuration file not found at: ${configPath}`);
     }
 
     const json = await load_json_config("default.agent.json");
