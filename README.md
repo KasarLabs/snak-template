@@ -1,44 +1,49 @@
 <h1 align="center">
   <img src="https://pbs.twimg.com/profile_images/1834202903189618688/N4J8emeY_400x400.png" width="50"><br>
-  sak-template
+  Starknet Agent Kit Template
 </h1>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/starknet-agent-kit">
-    <img src="https://img.shields.io/npm/v/starknet-agent-kit.svg" alt="NPM Version" />
+  <a href="https://www.npmjs.com/package/snak">
+    <img src="https://img.shields.io/npm/v/snak.svg" alt="NPM Version" />
   </a>
-  <a href="https://github.com/kasarlabs/starknet-agent-kit/blob/main/LICENSE">
-    <img src="https://img.shields.io/npm/l/starknet-agent-kit.svg" alt="License" />
+  <a href="https://github.com/kasarlabs/snak/blob/main/LICENSE">
+    <img src="https://img.shields.io/npm/l/snak.svg" alt="License" />
   </a>
-  <a href="https://github.com/kasarlabs/starknet-agent-kit/stargazers">
-    <img src="https://img.shields.io/github/stars/kasarlabs/starknet-agent-kit.svg" alt="GitHub Stars" />
+  <a href="https://github.com/kasarlabs/snak/stargazers">
+    <img src="https://img.shields.io/github/stars/kasarlabs/snak.svg" alt="GitHub Stars" />
   </a>
   <a href="https://nodejs.org">
-    <img src="https://img.shields.io/node/v/starknet-agent-kit.svg" alt="Node Version" />
+    <img src="https://img.shields.io/node/v/snak.svg" alt="Node Version" />
   </a>
 </p>
 
 <p align="center">
-  A minimal template for using the <a href="https://github.com/kasarlabs/starknet-agent-kit/">Starknet Agent Kit</a>
+  A minimal template for building powerful and secure AI agents powered by Starknet using the <a href="https://github.com/kasarlabs/snak/">Snak</a>
 </p>
 
 > ⚠️ **Warning**: This kit is currently under development. Use it at your own risk! Please be aware that sharing sensitive information such as private keys, personal data, or confidential details with AI models or tools carries inherent security risks. The contributors of this repository are **not responsible** for any loss, damage, or issues arising from its use.
 
+## Overview
+
+This template provides a starting point for using Snak as a framework to create Agents. The default implementation demonstrates a simple query to check blockchain status, which you can extend to build more complex applications.
+
 ## Prerequisites
 
-- Node.js installed
-- Git installed
-- An AI model provider API key (Choose one from the list [here](https://github.com/KasarLabs/starknet-agent-kit/blob/main/src/config/env.validation.ts))
-- A Starknet wallet private key
+- [Node.js](https://nodejs.org/) (see package.json for version requirements)
+- [pnpm](https://pnpm.io/installation) package manager
+- [Git](https://git-scm.com/downloads)
+- An AI model provider API key (Anthropic, OpenAI, Gemini, or Ollama)
+- A Starknet wallet (private key and address)
 - A Starknet RPC URL
 
-## Quick Start
+## Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/kasarlabs/sak-template.git
-cd sak-template
+git clone https://github.com/kasarlabs/snak-template.git
+cd snak-template
 ```
 
 2. Install dependencies:
@@ -47,35 +52,47 @@ cd sak-template
 pnpm install
 ```
 
-3. Create a `.env` file in the root directory with:
+3. Create a `.env` file in the root directory with the following variables:
 
 ```
-PRIVATE_KEY="your_wallet_private_key"
-PUBLIC_ADDRESS="your_wallet_address"
-RPC_URL="your_rpc_endpoint"
-AI_PROVIDER_API_KEY="your_ai_api_key"
-AI_PROVIDER="anthropic"  # or "openai", "gemini", "ollama"
-AI_MODEL="claude-3-5-sonnet-latest"  # or your chosen model
-API_KEY="your_api_key_for_endpoints"
+# Starknet configuration (mandatory)
+STARKNET_PUBLIC_ADDRESS="YOUR_STARKNET_PUBLIC_ADDRESS"
+STARKNET_PRIVATE_KEY="YOUR_STARKNET_PRIVATE_KEY"
+STARKNET_RPC_URL="YOUR_STARKNET_RPC_URL"
+
+# AI configuration (mandatory)
+AI_PROVIDER_API_KEY="YOUR_AI_PROVIDER_API_KEY"
+AI_MODEL="YOUR_AI_MODEL"
+AI_PROVIDER="YOUR_AI_PROVIDER"
+
+# Database configuration (mandatory)
+POSTGRES_USER="YOUR_POSTGRES_USER"
+POSTGRES_PASSWORD="YOUR_POSTGRES_PASSWORD"
+POSTGRES_DB="YOUR_POSTGRES_DB"
+POSTGRES_HOST="YOUR_POSTGRES_HOST"
+POSTGRES_PORT="YOUR_POSTGRES_PORT"
 ```
 
-> ℹ **Info**: You can find all the providers and their model names [here](https://github.com/KasarLabs/starknet-agent-kit/blob/main/src/config/env.validation.ts).
+> 💡 **Available Providers and Models**: For a complete list of supported AI providers and their corresponding model names, check the [environment validation configuration](https://github.com/KasarLabs/snak/blob/main/src/config/env.validation.ts) in the main SNAK repository.
 
-4. Run the application:
+## Agent Configuration
 
-```bash
-pnpm run dev
-```
+The agent's behavior is defined in `default.agent.json`. This file specifies:
 
-The template includes a basic setup that queries your ETH balance. You can modify `src/index.ts` to implement other functionalities available in the Starknet Agent Kit.
+- The agent's name and description
+- Available commands and their parameters
+- Memory settings
+- System prompt for the AI model
 
-## Getting an Anthropic API Key
+You can customize this configuration to create an agent tailored to your specific use case.
 
-1. Visit https://console.anthropic.com/
-2. Create an accountw
-3. Navigate to API Keys section
-4. Click "Create Key"
+## Support and Community
 
-## Support
+Need help or have questions? Join our community:
 
-Need help? Feel free to reach out to us on [Telegram](https://t.me/kasarlabs)
+- [Telegram](https://t.me/kasarlabs)
+- [GitHub Issues](https://github.com/kasarlabs/snak/issues)
+
+## License
+
+This project is licensed under the ISC License - see the LICENSE file for details.

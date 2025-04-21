@@ -1,7 +1,11 @@
-import { load_json_config, StarknetAgent } from '@hijox/agents';
-import * as dotenv from "dotenv";
-import { RpcProvider } from "starknet";
+import { load_json_config, StarknetAgent } from "@hijox/agents";
 
+import dotenv from "dotenv";
+import { RpcProvider } from "starknet";
+import fs from "fs";
+import path from "path";
+
+// Initialize environment variables
 dotenv.config();
 
 async function main() {
@@ -11,46 +15,93 @@ async function main() {
       AI_PROVIDER,
       AI_MODEL,
       AI_PROVIDER_API_KEY,
-      PRIVATE_KEY,
-      PUBLIC_ADDRESS,
-      RPC_URL,
+      STARKNET_PRIVATE_KEY,
+      STARKNET_PUBLIC_ADDRESS,
+      STARKNET_RPC_URL,
     } = process.env;
-    if (
-      !AI_PROVIDER ||
-      !AI_MODEL ||
-      !AI_PROVIDER_API_KEY ||
-      !PRIVATE_KEY ||
-      !RPC_URL
-    ) {
+
+    const requiredEnvVars = [
+      { name: "AI_PROVIDER", value: AI_PROVIDER },
+      { name: "AI_MODEL", value: AI_MODEL },
+      { name: "AI_PROVIDER_API_KEY", value: AI_PROVIDER_API_KEY },
+      { name: "STARKNET_PRIVATE_KEY", value: STARKNET_PRIVATE_KEY },
+      { name: "STARKNET_RPC_URL", value: STARKNET_RPC_URL },
+      { name: "STARKNET_PUBLIC_ADDRESS", value: STARKNET_PUBLIC_ADDRESS },
+    ];
+
+    const missingVars = requiredEnvVars
+      .filter((v) => !v.value)
+      .map((v) => v.name);
+
+    if (missingVars.length > 0) {
       throw new Error(
-        "Missing required environment variables. Please check your .env file.",
+        `Missing required environment variables: ${missingVars.join(", ")}. Please check your .env file.`,
       );
     }
+
+    // Check if config file exists
+    const configPath = path.resolve("default.agent.json");
+    if (!fs.existsSync(configPath)) {
+      throw new Error(`Agent configuration file not found at: ${configPath}`);
+    }
+
     const json = await load_json_config("default.agent.json");
     if (!json) {
-      throw new Error("Failed to load agent configuration.");
+      throw new Error(
+        "Failed to load agent configuration. Invalid or empty JSON file.",
+      );
     }
+
     // Initialize the StarknetAgent with required credentials
     const agent = new StarknetAgent({
-      provider: new RpcProvider({ nodeUrl: RPC_URL }),
-      accountPrivateKey: PRIVATE_KEY,
-      accountPublicKey: PUBLIC_ADDRESS,
-      aiModel: AI_MODEL,
-      aiProvider: AI_PROVIDER,
-      aiProviderApiKey: AI_PROVIDER_API_KEY,
-      agentconfig : json,
+      provider: new RpcProvider({ nodeUrl: STARKNET_RPC_URL as string }),
+      accountPrivateKey: STARKNET_PRIVATE_KEY as string,
+      accountPublicKey: STARKNET_PUBLIC_ADDRESS as string,
+      aiModel: AI_MODEL as string,
+      aiProvider: AI_PROVIDER as string,
+      aiProviderApiKey: AI_PROVIDER_API_KEY as string,
+      agentconfig: json,
       agentMode: "agent",
       signature: "key",
     });
 
     console.log("StarknetAgent initialized successfully.");
-    await agent.createAgentReactExecutor();
-    // Test the agent with a simple request 
-    console.log("Asking agent to execute a transaction...");
-    const balanceResponse = await agent.execute("What is my ETH balance?");
-    console.log("Balance response:", balanceResponse);
+
+    try {
+      console.log("Creating agent executor...");
+      await agent.createAgentReactExecutor();
+      console.log("✅ Agent executor created successfully!");
+
+      // Test the agent with a simple request
+      console.log("Asking q to execute a query...");
+      const agentResponse = await agent.execute(
+        "What is Starknet latest block number?",
+      );
+      console.log("Agent response:", agentResponse);
+    } catch (execError) {
+      const errorMessage = String(execError);
+      console.error("❌ Agent execution failed:");
+      console.error("Error details:", errorMessage);
+      console.error("Full error:", execError);
+      process.exit(1);
+    }
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error(
+      "Error:",
+      error instanceof Error ? error.message : String(error),
+    );
+    if (error instanceof Error && error.stack) {
+      console.debug("Stack trace:", error.stack);
+    }
+
+    // Handle winston logger errors
+    if (String(error).includes("Unknown logger level")) {
+      console.warn(
+        "Warning: Logger configuration issue detected. This is non-fatal but should be addressed.",
+      );
+    }
+
+    process.exit(1);
   }
 }
 
