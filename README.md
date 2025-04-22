@@ -19,20 +19,37 @@
 </p>
 
 <p align="center">
-  A minimal template for building powerful and secure AI agents powered by Starknet using the <a href="https://github.com/kasarlabs/snak/">Snak</a>
+  A TypeScript template for building powerful and secure AI agents powered by Starknet using the <a href="https://github.com/kasarlabs/snak/">Snak</a> framework
 </p>
 
 > ⚠️ **Warning**: This kit is currently under development. Use it at your own risk! Please be aware that sharing sensitive information such as private keys, personal data, or confidential details with AI models or tools carries inherent security risks. The contributors of this repository are **not responsible** for any loss, damage, or issues arising from its use.
 
 ## Overview
 
-This template provides a starting point for using Snak as a framework to create Agents. The default implementation demonstrates a simple query to check blockchain status, which you can extend to build more complex applications.
+This template provides a TypeScript-based starting point for building AI agents using the Snak framework. The default implementation demonstrates a simple query to check the latest Starknet block number, which you can extend to build more complex applications with multiple plugins.
+
+## Project Structure
+
+```
+snak-template
+├── config
+│   └── agents
+│       └── default.agent.json  # Agent configuration
+├── src
+│   ├── types                   # TypeScript type definitions
+│   └── index.ts                # Main application entry point
+├── compose.yml                 # Docker Compose for PostgreSQL
+├── package.json
+├── tsconfig.json
+└── pnpm-workspace.yaml
+```
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) (see package.json for version requirements)
 - [pnpm](https://pnpm.io/installation) package manager
 - [Git](https://git-scm.com/downloads)
+- [Docker](https://www.docker.com/products/docker-desktop/) (for PostgreSQL via Docker Compose)
 - An AI model provider API key (Anthropic, OpenAI, Gemini, or Ollama)
 - A Starknet wallet (private key and address)
 - A Starknet RPC URL
@@ -65,24 +82,57 @@ AI_PROVIDER_API_KEY="YOUR_AI_PROVIDER_API_KEY"
 AI_MODEL="YOUR_AI_MODEL"
 AI_PROVIDER="YOUR_AI_PROVIDER"
 
-# Database configuration (mandatory)
-POSTGRES_USER="YOUR_POSTGRES_USER"
-POSTGRES_PASSWORD="YOUR_POSTGRES_PASSWORD"
-POSTGRES_DB="YOUR_POSTGRES_DB"
-POSTGRES_HOST="YOUR_POSTGRES_HOST"
-POSTGRES_PORT="YOUR_POSTGRES_PORT"
+# Database configuration (used with Docker Compose)
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="password"
+POSTGRES_DB="snak"
+POSTGRES_HOST="localhost" 
+POSTGRES_PORT="5454"
 ```
 
 > 💡 **Available Providers and Models**: For a complete list of supported AI providers and their corresponding model names, check the [environment validation configuration](https://github.com/KasarLabs/snak/blob/main/src/config/env.validation.ts) in the main SNAK repository.
 
+## Usage
+
+### Build and Run
+
+To build and run the application:
+
+```bash
+# Build the TypeScript code
+pnpm run build
+
+# Start the agent with Docker PostgreSQL
+pnpm run start
+```
+
+For development with automatic reloading:
+
+```bash
+pnpm run dev
+```
+
+### Docker Setup
+
+The template uses Docker Compose to set up a PostgreSQL database with pgvector. The database will run on port 5454 by default.
+
+```bash
+# Start the PostgreSQL database only
+pnpm run docker-setup
+
+# Stop and remove the PostgreSQL container
+pnpm run docker-teardown
+```
+
 ## Agent Configuration
 
-The agent's behavior is defined in `default.agent.json`. This file specifies:
+The agent's behavior is defined in `config/agents/default.agent.json`. This file specifies:
 
-- The agent's name and description
-- Available commands and their parameters
-- Memory settings
-- System prompt for the AI model
+- The agent's name, bio, and background information
+- Agent objectives and knowledge areas
+- Available plugins and their capabilities
+- Memory settings and operational modes
+- Model context protocol (MCP) server configurations
 
 You can customize this configuration to create an agent tailored to your specific use case.
 
