@@ -33,16 +33,26 @@ async function main() {
 
     if (missingVars.length > 0) {
       throw new Error(
-        `Missing required environment variables: ${missingVars.join(", ")}. Please check your .env file.`,
+        `Missing required environment variables: ${missingVars.join(
+          ", "
+        )}. Please check your .env file.`
       );
     }
 
     const json = await load_json_config("default.agent.json");
     if (!json) {
       throw new Error(
-        "Failed to load agent configuration. Invalid or empty JSON file.",
+        "Failed to load agent configuration. Invalid or empty JSON file."
       );
     }
+
+    const database = {
+      database: process.env.POSTGRES_DB as string,
+      host: process.env.POSTGRES_HOST as string,
+      user: process.env.POSTGRES_USER as string,
+      password: process.env.POSTGRES_PASSWORD as string,
+      port: parseInt(process.env.POSTGRES_PORT as string),
+    };
 
     // Initialize the StarknetAgent with required credentials
     const agent = new StarknetAgent({
@@ -53,6 +63,7 @@ async function main() {
       aiProvider: AI_PROVIDER as string,
       aiProviderApiKey: AI_PROVIDER_API_KEY as string,
       agentconfig: json,
+      db_credentials: database,
       agentMode: "agent",
       signature: "key",
     });
@@ -67,7 +78,7 @@ async function main() {
       // Test the agent with a simple request
       console.log("Asking q to execute a query...");
       const agentResponse = await agent.execute(
-        "What is Starknet latest block number?",
+        "What is Starknet latest block number?"
       );
       console.log("Agent response:", agentResponse);
     } catch (execError) {
@@ -80,7 +91,7 @@ async function main() {
   } catch (error) {
     console.error(
       "Error:",
-      error instanceof Error ? error.message : String(error),
+      error instanceof Error ? error.message : String(error)
     );
     if (error instanceof Error && error.stack) {
       console.debug("Stack trace:", error.stack);
@@ -89,7 +100,7 @@ async function main() {
     // Handle winston logger errors
     if (String(error).includes("Unknown logger level")) {
       console.warn(
-        "Warning: Logger configuration issue detected. This is non-fatal but should be addressed.",
+        "Warning: Logger configuration issue detected. This is non-fatal but should be addressed."
       );
     }
 
